@@ -39,17 +39,28 @@ export function Navbar({
     >
       <nav
         className={cn(
-          'flex w-full max-w-6xl items-center justify-between rounded-full px-4 py-2.5 transition-all duration-500 sm:px-6',
+          'flex w-full max-w-6xl items-center justify-between rounded-full px-4 py-3.5 transition-all duration-500 sm:px-6',
           scrolled ? 'glass-strong shadow-[0_8px_40px_-12px_rgba(0,0,0,0.5)]' : 'bg-transparent',
         )}
       >
         {/* Logo */}
         <a
           href="#home"
-          className="group flex items-center gap-2 font-display text-lg font-bold tracking-tight"
+          className="group flex items-center gap-2.5 font-display text-xl font-bold tracking-tight"
         >
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-[linear-gradient(135deg,var(--color-violet),var(--color-cyan))] text-sm text-white shadow-[0_0_20px_-4px_var(--color-violet)]">
-            {profile.firstName[0]}
+          <span className="relative grid h-10 w-10 place-items-center transition-transform duration-500 ease-[var(--ease-premium)] group-hover:scale-105">
+            {/* Soft conic glow that blooms behind the mark on hover */}
+            <span className="absolute -inset-1 rounded-2xl glow-ring opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-60" />
+            {/* Gradient base + inner top highlight for a sculpted feel */}
+            <span className="absolute inset-0 rounded-xl bg-[linear-gradient(140deg,var(--color-violet),var(--color-brand-600)_45%,var(--color-cyan))] shadow-[0_6px_18px_-6px_var(--color-violet),inset_0_1px_0_0_rgba(255,255,255,0.4)]" />
+            {/* Glossy top sheen */}
+            <span className="absolute inset-0 rounded-xl bg-[linear-gradient(180deg,rgba(255,255,255,0.45),transparent_55%)] opacity-70" />
+            {/* Hairline ring for crisp edge definition */}
+            <span className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/25" />
+            {/* Monogram */}
+            <span className="relative font-display text-lg font-extrabold leading-none text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
+              {profile.firstName[0]}
+            </span>
           </span>
           <span className="hidden sm:inline">
             {profile.firstName}
@@ -67,7 +78,7 @@ export function Navbar({
                 <a
                   href={link.href}
                   className={cn(
-                    'relative rounded-full px-4 py-2 text-sm font-medium transition-colors',
+                    'relative rounded-full px-4 py-2.5 text-[15px] font-medium transition-colors',
                     isActive ? 'text-current' : 'text-current/55 hover:text-current',
                   )}
                 >
@@ -90,7 +101,7 @@ export function Navbar({
           <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
           <div className="hidden md:block">
             <Magnetic>
-              <Button href="#contact" variant="glow" className="px-5 py-2">
+              <Button href="#contact" variant="glow" className="px-5 py-2.5">
                 Let&apos;s talk
               </Button>
             </Magnetic>
