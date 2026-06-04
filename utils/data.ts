@@ -23,6 +23,21 @@ export const profile = {
   resumeUrl: '/Abhijeet_Mallick_Resume.pdf',
 } as const
 
+/**
+ * Contact form delivery (Web3Forms — https://web3forms.com).
+ * The access key is safe to expose on the client; it only allows submitting
+ * to YOUR configured inbox. Get a free key by entering your email at
+ * https://web3forms.com — then either paste it below or set VITE_WEB3FORMS_KEY
+ * in a `.env` file (the env var wins if present).
+ */
+export const contactConfig = {
+  web3formsAccessKey:
+    (import.meta.env.VITE_WEB3FORMS_KEY as string | undefined) ??
+    '7afae53f-60a6-4b74-8a53-6ce8975bf595',
+  // Subject line of the email you receive.
+  subject: 'New message from your portfolio',
+} as const
+
 export type NavLink = { label: string; href: string }
 
 export const navLinks: NavLink[] = [

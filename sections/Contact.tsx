@@ -5,12 +5,14 @@ import { Reveal } from '../components/Reveal'
 import { Input, Textarea } from '../components/Field'
 import { Button } from '../components/Button'
 import { SocialLinks } from '../components/SocialLinks'
-import { profile } from '../utils/data'
+import { profile, contactConfig } from '../utils/data'
 import { ArrowRight, Check, Mail, MapPin, Phone, Spinner } from '../components/Icons'
 
 type Form = { name: string; email: string; message: string }
 type Errors = Partial<Record<keyof Form, string>>
-type Status = 'idle' | 'submitting' | 'success'
+type Status = 'idle' | 'submitting' | 'success' | 'error'
+
+const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -41,10 +43,32 @@ export function Contact() {
     if (Object.keys(found).length) return
 
     setStatus('submitting')
-    // Simulated async submission — wire this to your email/API of choice.
-    await new Promise((r) => setTimeout(r, 1400))
-    setStatus('success')
-    setForm({ name: '', email: '', message: '' })
+
+    try {
+      // Send the submission to Web3Forms, which emails it straight to my inbox.
+      const res = await fetch(WEB3FORMS_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: contactConfig.web3formsAccessKey,
+          subject: contactConfig.subject,
+          from_name: form.name,
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          // Honeypot field — bots fill it, humans never see it.
+          botcheck: '',
+        }),
+      })
+
+      const data = (await res.json()) as { success?: boolean }
+      if (!res.ok || !data.success) throw new Error('Submission failed')
+
+      setStatus('success')
+      setForm({ name: '', email: '', message: '' })
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
@@ -159,6 +183,21 @@ export function Contact() {
               >
                 {status === 'submitting' ? 'Sending…' : 'Send message'}
               </Button>
+
+              {status === 'error' && (
+                <motion.p
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  role="alert"
+                  className="-mt-2 text-sm text-[var(--color-magenta)]"
+                >
+                  Something went wrong sending your message. Please try again or email me at{' '}
+                  <a href={`mailto:${profile.email}`} className="underline hover:text-current">
+                    {profile.email}
+                  </a>
+                  .
+                </motion.p>
+              )}
             </div>
 
             {/* Success overlay */}
